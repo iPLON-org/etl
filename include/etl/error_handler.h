@@ -43,6 +43,17 @@ SOFTWARE.
 
 #include <assert.h>
 
+#if defined(ETL_NCL_ERRORS)
+#include "ncl_error.hpp"
+namespace ncl{
+  template <auto error>
+  inline void send_global_error();
+  namespace error {
+    template <auto> struct ignore_error;
+  }
+}
+#endif
+
 #if defined(ETL_LOG_ERRORS) || defined(ETL_IN_UNIT_TEST)
 namespace etl
 {
@@ -334,6 +345,14 @@ namespace etl
     #define ETL_ASSERT_FAIL_AND_RETURN(e) do {throw((e));} while(false)                   // Throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {throw((e));} while(false)          // Throws an exception.
   #endif
+#elif defined(ETL_NCL_ERRORS)
+  #define ETL_ASSERT(b, e) do {if constexpr(!ncl::error::ignore_error<e>::value) if (!(b)) ETL_UNLIKELY {ncl::send_global_error<(e)>();}} while(false)                                 // If the condition fails, calls the error handler
+  #define ETL_ASSERT_OR_RETURN(b, e) do {if constexpr(!ncl::error::ignore_error<e>::value) if (!(b)) ETL_UNLIKELY {ncl::send_global_error<(e)>(); return;}} while(false)               // If the condition fails, calls the error handler and return
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if constexpr(!ncl::error::ignore_error<e>::value) if (!(b)) ETL_UNLIKELY {ncl::send_global_error<(e)>(); return (v);}} while(false)  // If the condition fails, calls the error handler and return a value
+  
+  #define ETL_ASSERT_FAIL(e) do {ncl::send_global_error<(e)>();} while(false)                                          // Calls the error handler
+  #define ETL_ASSERT_FAIL_AND_RETURN(e) do {ncl::send_global_error<(e)>(); return;} while(false)                       // Calls the error handler and return
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {ncl::send_global_error<(e)>(); return (v);} while(false)          // Calls the error handler and return a value
 #else
   #if defined(ETL_LOG_ERRORS)
     #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e));}} while(false)                                 // If the condition fails, calls the error handler
@@ -406,6 +425,12 @@ namespace etl
   // include nothing, no file name, no line number, no text
   #define ETL_ERROR(e) (e("", -1))
   #define ETL_ERROR_WITH_VALUE(e, v) (e("", -1, (v)))
+  #define ETL_ERROR_TEXT(verbose_text, terse_text) ("")
+  #define ETL_ERROR_GENERIC(text) (etl::exception("", "", -1))
+#elif defined(ETL_NCL_ERRORS)
+  // include nothing, no file name, no line number, no text
+  #define ETL_ERROR(e) (ncl::error::etl_errorer::e)
+  #define ETL_ERROR_WITH_VALUE(e, v) (ncl::error::etl_errorer::e)
   #define ETL_ERROR_TEXT(verbose_text, terse_text) ("")
   #define ETL_ERROR_GENERIC(text) (etl::exception("", "", -1))
 #else
