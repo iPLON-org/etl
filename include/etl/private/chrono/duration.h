@@ -480,23 +480,6 @@ namespace etl
   }
 
   //***********************************************************************
-  /// Spaceship operator
-  //***********************************************************************
-#if ETL_USING_CPP20
-  template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  [[nodiscard]]
-  constexpr auto operator<=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
-  {
-    using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
-
-    common_t l = etl::chrono::duration_cast<common_t>(lhs);
-    common_t r = etl::chrono::duration_cast<common_t>(rhs);
-
-    return (l.count() <=> r.count());
-  }
-#endif
-
-  //***********************************************************************
   /// Operator +
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>

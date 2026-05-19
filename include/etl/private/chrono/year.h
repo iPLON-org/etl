@@ -238,17 +238,6 @@ namespace etl
     }
 
     //***********************************************************************
-    /// Spaceship operator
-    //***********************************************************************
-#if ETL_USING_CPP20
-    [[nodiscard]]
-    inline constexpr auto operator<=>(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
-    {
-      return (static_cast<int>(y1) <=> static_cast<int>(y2));
-    }
-#endif
-
-    //***********************************************************************
     /// Add etl::chrono::years to etl::chrono::year
     ///\return etl::chrono::year
     //***********************************************************************

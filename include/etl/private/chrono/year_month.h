@@ -230,26 +230,6 @@ namespace etl
     {
       return !(lhs < rhs);
     }
-
-    //***********************************************************************
-    /// Spaceship operator
-    //***********************************************************************
-#if ETL_USING_CPP20
-    [[nodiscard]]
-    inline constexpr auto operator<=>(const etl::chrono::year_month& lhs, const etl::chrono::year_month& rhs) ETL_NOEXCEPT
-    {
-      auto cmp = lhs.year() <=> rhs.year();
-
-      if (cmp != 0)
-      {
-        return cmp;
-      }
-      else
-      {
-        return lhs.month() <=> rhs.month();
-      }
-    }
-#endif
   } // namespace chrono
 
   //*************************************************************************

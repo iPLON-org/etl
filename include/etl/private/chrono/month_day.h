@@ -175,26 +175,6 @@ namespace etl
       return !(lhs < rhs);
     }
 
-    //***********************************************************************
-    /// Spaceship operator
-    //***********************************************************************
-#if ETL_USING_CPP20
-    [[nodiscard]]
-    inline constexpr auto operator<=>(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
-    {
-      auto cmp = lhs.month() <=> rhs.month();
-
-      if (cmp != 0)
-      {
-        return cmp;
-      }
-      else
-      {
-        return lhs.day() <=> rhs.day();
-      }
-    }
-#endif
-
     //*************************************************************************
     /// month_day_last
     //*************************************************************************
@@ -294,17 +274,6 @@ namespace etl
     {
       return !(lhs < rhs);
     }
-
-    //***********************************************************************
-    /// Spaceship operator
-    //***********************************************************************
-#if ETL_USING_CPP20
-    [[nodiscard]]
-    inline constexpr auto operator<=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
-    }
-#endif
   } // namespace chrono
 
   //*************************************************************************
