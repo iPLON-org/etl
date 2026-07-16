@@ -44,7 +44,7 @@ SOFTWARE.
 #include <assert.h>
 
 #if defined(ETL_NCL_ERRORS)
-  #include "ncl_error.hpp"
+  #include "ncl/ncl_error.hpp"
 namespace ncl
 {
   template <auto error>
